@@ -20,45 +20,28 @@ class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
         if(!root) return {};
-        queue<pair<TreeNode*, int>> q, trav;
-        q.push(make_pair(root, 0));
-        trav.push(q.front());
-        while(q.size()) {
-            TreeNode* temp = q.front().first;
-            int l = q.front().second + 1;
-            q.pop();
-            if(temp->left) {
-                q.push(make_pair(temp->left, l));
-                trav.push(make_pair(temp->left, l));
-            }
-            if(temp->right) {
-                q.push(make_pair(temp->right, l));
-                trav.push(make_pair(temp->right, l));
-            } 
-        }
-        vector<vector<int>> ans;
-        while(trav.size()) {
-            int m = trav.front().second;
-            vector<int> q;
-            if(m%2==0) {
-                while(trav.size() && trav.front().second == m) {
-                    q.push_back(trav.front().first->val);
-                    trav.pop();
-                }
-            } else {
-                stack<int> st;
-                while(trav.size() && trav.front().second == m) {
-                    st.push(trav.front().first->val);
-                    trav.pop();
-                }
-                while(st.size()) {
-                    q.push_back(st.top());
-                    st.pop();
+        vector<vector<int>> zigZagOrderArray;
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        int order = 1;
+        while(nodes.size()) {
+            int visitCount = nodes.size();
+            vector<int> level(visitCount);
+            for(int i = 0 ; i < visitCount ; i++) {
+                TreeNode* temp = nodes.front();
+                if(temp->left) nodes.push(temp->left);
+                if(temp->right) nodes.push(temp->right);
+                nodes.pop();
+                if(order==0) {
+                    level[visitCount - i - 1] = temp->val;
+                } else {
+                    level[i] = temp->val;
                 }
             }
-            ans.push_back(q);
+            zigZagOrderArray.push_back(level);
+            order = (order == 0) ? 1 : 0;
         }
-        return ans;
+        return zigZagOrderArray;
     }
 };
 // @lc code=end
